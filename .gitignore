@@ -1,0 +1,35 @@
+## Build output
+bin/
+obj/
+
+## IDE
+.vs/
+.vscode/
+.idea/
+.claude/
+*.user
+*.suo
+
+## Test & logs
+TestResults/
+*.log
+coverage*.xml
+
+## Playwright
+.playwright/
+playwright-report/
+test-results/
+trace.zip
+screenshots/
+
+## Allure
+allure-results/
+allure-report/
+.allure/
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Local config overrides
+Config/appsettings.Local.json

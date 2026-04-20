@@ -1,0 +1,6 @@
+{
+  "allure": {
+    "directory": "allure-results",
+    "title": "Wikipedia Playwright Automation"
+  }
+}

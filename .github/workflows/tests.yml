@@ -1,0 +1,71 @@
+name: Tests with Allure Report
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Setup PowerShell Core (required by Playwright on Linux)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y powershell
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Install Playwright Browsers
+        shell: bash
+        run: |
+          pwsh bin/Release/net9.0/playwright.ps1 install --with-deps chromium
+
+      - name: Run Tests
+        # Allure.NUnit writes results to allure-results/ automatically via allureConfig.json.
+        # No --logger flag needed.
+        run: dotnet test --configuration Release --no-build
+        env:
+          WA_HEADLESS: "true"
+
+      - name: Install Allure CLI
+        if: always()
+        run: npm install -g allure-commandline
+
+      - name: Generate Allure Report
+        if: always()
+        run: |
+          # Allure.NUnit writes results relative to the test binary directory, not the
+          # workspace root. For a Release build the path is bin/Release/net9.0/allure-results.
+          RESULTS="bin/Release/net9.0/allure-results"
+          if [ -d "$RESULTS" ]; then
+            allure generate "$RESULTS" --clean -o allure-report
+          else
+            echo "Expected results at $RESULTS — searching..."
+            find . -name "allure-results" -type d 2>/dev/null || echo "Not found anywhere."
+          fi
+
+      - name: Upload Allure Report Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report
+          retention-days: 7

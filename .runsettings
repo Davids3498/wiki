@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <RunConfiguration>
+    <MaxCpuCount>1</MaxCpuCount>
+    <ResultsDirectory>TestResults</ResultsDirectory>
+    <TargetFrameworks>net9.0</TargetFrameworks>
+  </RunConfiguration>
+  <NUnit>
+    <DefaultTestNamePattern>{m}{a}</DefaultTestNamePattern>
+  </NUnit>
+  <TestRunParameters>
+    <Parameter name="Headless" value="true" />
+    <Parameter name="SlowMoMs" value="0" />
+  </TestRunParameters>
+</RunSettings>
